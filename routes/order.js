@@ -11,6 +11,7 @@ const {
 
 router.post('/', verifyToken, async (req, res) => {
   const { body } = req;
+  console.log(body);
   const newOrder = new Order(body);
   try {
     const savedOrder = await newOrder.save();
@@ -53,9 +54,10 @@ router.delete('/:id', verifyTokenAndAdmin, async (req, res) => {
 // GET User Orders
 
 router.get('/find/:userId', verifyTokenAndAuthorization, async (req, res) => {
+  console.log(req.params);
   try {
     const orders = await Order.find({ userId: req.params.userId });
-
+    console.log(orders);
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json(error);

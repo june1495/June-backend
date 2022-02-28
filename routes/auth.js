@@ -9,20 +9,20 @@ const User = require('../models/User');
 // REGISTER
 
 router.post('/register', async (req, res) => {
-  const { body } = req;
   const newUser = new User({
-    name: body.name,
-    email: body.email,
+    username: req.body.name,
+    email: req.body.email,
     password: cryptoJs.AES.encrypt(
-      body.password,
+      req.body.password,
       process.env.PASS_SEC,
     ).toString(),
   });
+
   try {
     const savedUser = await newUser.save();
-    res.status(200).json(savedUser);
-  } catch (error) {
-    res.status(500).json(error);
+    res.status(201).json(savedUser);
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 
@@ -53,7 +53,7 @@ router.post('/login', async (req, res) => {
 
     res.status(200).json({
       id: user.id,
-      name: user.name,
+      name: user.username,
       email: user.email,
       token,
     });
