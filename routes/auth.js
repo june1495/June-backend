@@ -11,7 +11,7 @@ const User = require('../models/User');
 router.post('/register', async (req, res) => {
   const { body } = req;
   const newUser = new User({
-    username: body.username,
+    name: body.name,
     email: body.email,
     password: cryptoJs.AES.encrypt(
       body.password,
@@ -31,7 +31,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { body } = req;
   try {
-    const user = await User.findOne({ username: body.username });
+    const user = await User.findOne({ email: body.email });
     !user && res.status(401).json('wrong credentials');
 
     const hashedPassword = cryptoJs.AES.decrypt(
@@ -42,7 +42,7 @@ router.post('/login', async (req, res) => {
     originalPassword !== body.password &&
       res.status(401).json('Wrong credentials');
 
-    const accessToken = jwt.sign(
+    const token = jwt.sign(
       {
         id: user._id,
         isAdmin: user.isAdmin,
@@ -51,8 +51,12 @@ router.post('/login', async (req, res) => {
       { expiresIn: 86400 },
     );
 
-    const { password, ...others } = user._doc;
-    res.status(200).json({ ...others, accessToken });
+    res.status(200).json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      token,
+    });
   } catch (error) {
     res.status(500).json(error);
   }
