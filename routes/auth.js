@@ -9,8 +9,6 @@ const User = require('../models/User');
 // REGISTER
 
 router.post('/register', async (req, res) => {
-  const { body } = req;
-  console.log(body);
   const newUser = new User({
     username: req.body.name,
     email: req.body.email,
@@ -19,7 +17,6 @@ router.post('/register', async (req, res) => {
       process.env.PASS_SEC,
     ).toString(),
   });
-  console.log(newUser);
   try {
     const savedUser = await newUser.save();
     res.status(200).json(savedUser);
