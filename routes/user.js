@@ -11,6 +11,7 @@ const {
 
 router.put('/:id', verifyTokenAndAuthorization, async (req, res) => {
   const { body } = req;
+
   if (body.password) {
     body.password = cryptoJs.AES.encrypt(
       body.password,
